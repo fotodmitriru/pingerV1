@@ -1,0 +1,5 @@
+<?xml version="1.0"?>
+<ArrayOfItemAlias xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <IConfigProtocol Host="ya.ru" Period="1" NameProt="ICMP" AdditionalAttribute=""/>
+  <IConfigProtocol Host="User" Period="1" NameProt="ICMP" AdditionalAttribute=""/>
+</ArrayOfItemAlias>
