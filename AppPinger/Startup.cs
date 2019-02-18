@@ -41,7 +41,7 @@ namespace AppPinger
         private static void ConfigurePinger(IServiceCollection serviceCollection)
         {
             serviceCollection.AddOptions();
-            serviceCollection.AddTransient<IConfigProtocol, ConfigProtocol>();
+            serviceCollection.AddTransient<ConfigProtocol>();
             serviceCollection.AddSingleton<IListConfigProtocols, ListConfigProtocols>();
             serviceCollection.AddTransient<IICMP, ICMP>();
             serviceCollection.AddTransient<IHTTP, HTTP>();

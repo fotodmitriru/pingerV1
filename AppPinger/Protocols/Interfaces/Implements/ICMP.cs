@@ -12,7 +12,7 @@ namespace AppPinger.Protocols.Interfaces.Implements
         public string ReplyLog { get; set; }
         //public IList<ConfigProtocol> ListConfProtocols { get; set; }
 
-        public bool StartPing(IConfigProtocol confProtocol)
+        public bool StartPing(ConfigProtocol confProtocol)
         {
             ///////из конструктора///
             if (confProtocol == null)

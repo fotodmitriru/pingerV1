@@ -1,14 +1,6 @@
 ﻿using System;
 using System.IO;
-using AppPinger.Protocols;
-using AppPinger.Protocols.Interfaces;
-using AppPinger.Protocols.Interfaces.Implements;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Hosting.Internal;
 using Microsoft.Extensions.Configuration;
-using Microsoft.AspNetCore;
-using Microsoft.AspNetCore.Builder.Internal;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace AppPinger
 {

@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace AppPinger.Protocols.Interfaces.Implements
 {
@@ -9,9 +7,8 @@ namespace AppPinger.Protocols.Interfaces.Implements
         public string Host { get; set; }
         public int Period { get; set; }
         public string ReplyLog { get; set; }
-        public IConfigProtocol ConfigProtocol { get; set; }
 
-        public bool StartPing(IConfigProtocol confProtocol)
+        public bool StartPing(ConfigProtocol confProtocol)
         {
             throw new NotImplementedException();
         }

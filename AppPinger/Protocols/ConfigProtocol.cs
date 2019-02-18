@@ -1,8 +1,6 @@
-﻿using System.Xml.Serialization;
-
-namespace AppPinger.Protocols.Interfaces.Implements
+﻿namespace AppPinger.Protocols
 {
-    public class ConfigProtocol:IConfigProtocol
+    public class ConfigProtocol
     {
         public string Host { get; set; }
 
