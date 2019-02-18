@@ -2,27 +2,36 @@
 using System.IO;
 using System.Text;
 
-namespace AppPinger.Protocols.Implements
+namespace AppPinger
 {
     class SaveLogs
     {
-        public static bool WriteLog(string distStorage, string dataLog)
+        public static string GlobalDistStorage { get; set; }
+
+        public static async void WriteLogAsync(string dataLog, string distStorage = "")
         {
+
+            if (distStorage == string.Empty)
+            {
+                if (string.IsNullOrEmpty(GlobalDistStorage))
+                {
+                    throw new ArgumentNullException("distStorage", "Не указан путь сохранения логов!");
+                }
+                distStorage = GlobalDistStorage;
+            }
+
             try
             {
                 bool fExists = File.Exists(distStorage);
                 using (StreamWriter sw = new StreamWriter(distStorage, fExists, Encoding.Default))
                 {
-                    sw.WriteLine(dataLog);
+                    await sw.WriteLineAsync(dataLog);
                 }
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
-                throw;
+                throw new ArgumentException("Файл логов не удалось сохранить!", e);
             }
-
-            return true;
         }
     }
 }

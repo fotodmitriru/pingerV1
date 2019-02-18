@@ -4,7 +4,7 @@ using System.Text;
 
 namespace AppPinger.Protocols.Interfaces
 {
-    public interface IICMP : IPingProtocol
+    public interface IICMP : IBasePingProtocol
     {
 
     }

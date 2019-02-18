@@ -1,5 +1,14 @@
 ﻿using System;
-using AppPinger.Protocols.Implements;
+using System.IO;
+using AppPinger.Protocols;
+using AppPinger.Protocols.Interfaces;
+using AppPinger.Protocols.Interfaces.Implements;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Hosting.Internal;
+using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore;
+using Microsoft.AspNetCore.Builder.Internal;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace AppPinger
 {
@@ -7,16 +16,21 @@ namespace AppPinger
     {
         static void Main(string[] args)
         {
-            var listConfig = new ListConfigProtocols();
-            if (listConfig.ReadConfig("./listHosts.xml"))
+            string pathAppConfig = "appConfig.json";
+            if (args.Length > 0)
+                pathAppConfig = args[0];
+            if (!File.Exists(pathAppConfig))
             {
-                Console.WriteLine("Hosts read!");
+                Console.WriteLine("Файл с конфигурациями приложения не найден!");
+                return;
             }
-            var icmp = new ICMP(listConfig.ListConfProtocols[0]);
 
-            Console.WriteLine(icmp.Host);
-            icmp.StartPing();
-            Console.ReadLine();
+            IConfiguration appConfig = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile(pathAppConfig, optional: true, reloadOnChange: true)
+                .Build();
+
+            Startup.InitPinger(appConfig);
         }
     }
 }

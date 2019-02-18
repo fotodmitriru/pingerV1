@@ -2,26 +2,25 @@
 using System.Net.NetworkInformation;
 using System.Text;
 using System.Threading;
-using AppPinger.Protocols.Interfaces;
 
-namespace AppPinger.Protocols.Implements
+namespace AppPinger.Protocols.Interfaces.Implements
 {
-    class ICMP: IICMP
+    class ICMP : IICMP
     {
         public string Host { get; set; }
-        public int Period { get; set; }
+        public int Period { get; set; } = 1;
         public string ReplyLog { get; set; }
+        //public IList<ConfigProtocol> ListConfProtocols { get; set; }
 
-        public ICMP(IConfigProtocol confProtocols)
+        public bool StartPing(IConfigProtocol confProtocol)
         {
-            if (confProtocols == null)
+            ///////из конструктора///
+            if (confProtocol == null)
                 throw new ArgumentException("Не заданы параметры для протокола ICMP!");
-            Host = confProtocols.Host ?? throw new NullReferenceException("Параметр Host не задан!");
-            Period = confProtocols.Period;
-        }
+            Host = confProtocol.Host ?? throw new NullReferenceException("Параметр Host не задан!");
+            Period = confProtocol.Period;
+            ////////////////////////
 
-        public bool StartPing()
-        {
             if (Host.Length == 0)
                 throw new ArgumentException("Не указан адрес для пинга!");
 
@@ -36,29 +35,29 @@ namespace AppPinger.Protocols.Implements
 
             pingSender.SendAsync(Host, timeout, buffer, pingOptions, waiter);
             waiter.WaitOne();
-            Console.WriteLine(ReplyLog);
+            if (ReplyLog != null) PingCompleted?.Invoke(ReplyLog);
             return true;
         }
+
+        public event DelegatePingCompleted PingCompleted;
 
         private void PingRoundCompleted(object sender, PingCompletedEventArgs ev)
         {
             if (ev.Cancelled)
             {
-                Console.WriteLine("Пинг отменён.");
-                ((AutoResetEvent)ev.UserState).Set();
+                ReplyLog = "Пинг отменён.";
+                ((AutoResetEvent) ev.UserState).Set();
             }
 
             if (ev.Error != null)
             {
-                Console.WriteLine("Ошибка пинга:");
-                Console.WriteLine(ev.Error.ToString());
-                ((AutoResetEvent)ev.UserState).Set();
+                ReplyLog = string.Format("Ошибка пинга: {0}", ev.Error);
+                ((AutoResetEvent) ev.UserState).Set();
             }
 
             PingReply pingReply = ev.Reply;
             ReplyLog = string.Format("{0} {1} {2}", DateTime.Now.ToString("dd MMMM yyyy HH:mm:ss"), Host,
                 pingReply.Status);
-            SaveLogs.WriteLog("C:\\Logs.txt", ReplyLog);     //path???
             ((AutoResetEvent)ev.UserState).Set();
         }
     }

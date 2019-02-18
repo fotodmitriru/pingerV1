@@ -1,10 +1,11 @@
 ﻿using System.Collections.Generic;
+using AppPinger.Protocols.Interfaces.Implements;
 
 namespace AppPinger.Protocols.Interfaces
 {
     public interface IListConfigProtocols
     {
-        IList<IConfigProtocol> ListConfProtocols { get; set; }
+        IList<ConfigProtocol> ListConfProtocols { get; set; }
         bool ReadConfig(string distSource);
     }
 }

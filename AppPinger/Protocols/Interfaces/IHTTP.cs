@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace AppPinger.Protocols.Interfaces
+﻿namespace AppPinger.Protocols.Interfaces
 {
-    interface IHTTP : IPingProtocol
+    interface IHTTP : IBasePingProtocol
     {
         int ValidCode { get; set; }
     }

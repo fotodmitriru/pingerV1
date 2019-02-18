@@ -4,7 +4,7 @@ using System.Text;
 
 namespace AppPinger.Protocols.Interfaces
 {
-    interface ITCP : IPingProtocol
+    interface ITCP : IBasePingProtocol
     {
         int Port { get; set; }
     }
