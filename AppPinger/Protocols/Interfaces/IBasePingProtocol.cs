@@ -1,4 +1,5 @@
-﻿using AppPinger.Protocols.Interfaces.Implements;
+﻿using System.Threading.Tasks;
+using AppPinger.Protocols.Interfaces.Implements;
 
 namespace AppPinger.Protocols.Interfaces
 {
@@ -6,7 +7,6 @@ namespace AppPinger.Protocols.Interfaces
     {
         string Host { get; set; }
         int Period { get; set; }
-        string ReplyLog { get; set; }
         bool StartPing(ConfigProtocol confProtocol);
         event DelegatePingCompleted PingCompleted;
     }

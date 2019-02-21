@@ -34,7 +34,7 @@ namespace AppPinger
 
             SaveLogs.GlobalDistStorage = appConfig["fileLogs"];
             new PingProtocols(app, appConfig, true);
-            Console.WriteLine("Все пинги завершены.");
+            Console.WriteLine("Все пинги запущены, для выхода из программы нажмите любую клавишу.");
             Console.ReadLine();
         }
 
@@ -45,7 +45,7 @@ namespace AppPinger
             serviceCollection.AddSingleton<IListConfigProtocols, ListConfigProtocols>();
             serviceCollection.AddTransient<IICMP, ICMP>();
             serviceCollection.AddTransient<IHTTP, HTTP>();
-
+            serviceCollection.AddTransient<ITCP, TCP>();
         }
     }
 }

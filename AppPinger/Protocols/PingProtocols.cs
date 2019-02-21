@@ -8,7 +8,7 @@ namespace AppPinger.Protocols
 {
     public class PingProtocols
     {
-        private IBasePingProtocol _pingProtocol;
+        //private IBasePingProtocol _pingProtocol;
         /*private readonly ITCP _tcp;
         private readonly IHTTP _http;*/
         private readonly IConfiguration _configuration;
@@ -26,12 +26,25 @@ namespace AppPinger.Protocols
             foreach (var listConfProtocol in listConfigProtocols.ListConfProtocols)
             {
                 if (listConfProtocol.NameProt == "ICMP")
-                    _pingProtocol = appBuilder.ApplicationServices.GetService<IICMP>();
-                if (listConfProtocol.NameProt == "HTTP")
-                    _pingProtocol = appBuilder.ApplicationServices.GetService<IHTTP>();
+                {
+                    var pingProtocol = appBuilder.ApplicationServices.GetService<IICMP>();
+                    pingProtocol.PingCompleted += PrintAnswerLog;
+                    pingProtocol.StartPing(listConfProtocol);
+                }
 
-                _pingProtocol.PingCompleted += PrintAnswerLog;
-                _pingProtocol.StartPing(listConfProtocol);
+                if (listConfProtocol.NameProt == "HTTP")
+                {
+                    var pingProtocol = appBuilder.ApplicationServices.GetService<IHTTP>();
+                    pingProtocol.PingCompleted += PrintAnswerLog;
+                    pingProtocol.StartPing(listConfProtocol);
+                }
+                
+                if (listConfProtocol.NameProt == "TCP")
+                {
+                    var pingProtocol = appBuilder.ApplicationServices.GetService<ITCP>();
+                    pingProtocol.PingCompleted += PrintAnswerLog;
+                    pingProtocol.StartPing(listConfProtocol);
+                }
             }
 
             return true;

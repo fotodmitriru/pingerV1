@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml.Serialization;
@@ -15,8 +16,15 @@ namespace AppPinger.Protocols.Interfaces.Implements
                 return false;
 
             var json = File.ReadAllText(distSource);
-            var jsonDeser = JsonConvert.DeserializeObject<IList<ConfigProtocol>>(json);
-            ListConfProtocols = jsonDeser;
+            try
+            {
+                var jsonDeser = JsonConvert.DeserializeObject<IList<ConfigProtocol>>(json);
+                ListConfProtocols = jsonDeser;
+            }
+            catch (Exception e)
+            {
+                throw new NullReferenceException("Ошибка! Проверьте формат файла настроек!"); ;
+            }
 
             return ListConfProtocols.Any();
         }
