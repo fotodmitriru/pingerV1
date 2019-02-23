@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using AppPinger.Protocols.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
@@ -51,16 +49,16 @@ namespace AppPinger.Protocols
 
                 if (pingProtocol != null)
                 {
-                    pingProtocol.Host = (string)confProtocol.AdditionalAttributes[confProtocol.HeadersAddAttr.IndexOf("Host")];
-                    pingProtocol.Period = Convert.ToInt32(confProtocol.AdditionalAttributes[confProtocol.HeadersAddAttr.IndexOf("Period")]);
-                    pingProtocol.DistStorage = (string)confProtocol.AdditionalAttributes[confProtocol.HeadersAddAttr.IndexOf("DistStorage")] ?? "";
+                    pingProtocol.Host = (string)confProtocol.GetAdditionalAttribute("Host");
+                    pingProtocol.Period = Convert.ToInt32(confProtocol.GetAdditionalAttribute("Period"));
+                    pingProtocol.DistStorage = (string)confProtocol.GetAdditionalAttribute("DistStorage") ?? "";
                     pingProtocol.PingCompleted += PrintAnswerLog;
                     
                     dynamic p = pingProtocol;
                     if (p is IHTTP)
-                        p.ValidCode = Convert.ToInt32(confProtocol.AdditionalAttributes[confProtocol.HeadersAddAttr.IndexOf("ValidCode")]);
+                        p.ValidCode = Convert.ToInt32(confProtocol.GetAdditionalAttribute("ValidCode"));
                     if(p is ITCP)
-                        p.Port = Convert.ToInt32(confProtocol.AdditionalAttributes[confProtocol.HeadersAddAttr.IndexOf("Port")]);
+                        p.Port = Convert.ToInt32(confProtocol.GetAdditionalAttribute("Port"));
                     p.StartPing();
                 }
             }

@@ -19,6 +19,8 @@ namespace AppPinger.Protocols.Interfaces.Implements
                 throw new ArgumentException("Не указан адрес для пинга!");
             if (Period == 0)
                 throw new ArgumentException("Не указан период для пинга!");
+            if (Port == 0)
+                throw new ArgumentException("Не указан порт для пинга!");
 
             StartAsync();
             return true;

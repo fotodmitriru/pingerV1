@@ -8,5 +8,10 @@ namespace AppPinger.Protocols
         public string NameProt { get; set; }
         public List<string> HeadersAddAttr { get; set; }
         public Object[] AdditionalAttributes { get; set; }
+
+        public object GetAdditionalAttribute(string nameAttribute)
+        {
+            return AdditionalAttributes[HeadersAddAttr.IndexOf(nameAttribute)];
+        }
     }
 }

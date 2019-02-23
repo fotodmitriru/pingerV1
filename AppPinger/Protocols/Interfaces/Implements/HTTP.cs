@@ -11,7 +11,7 @@ namespace AppPinger.Protocols.Interfaces.Implements
         public int Period { get; set; }
 
         public event DelegatePingCompleted PingCompleted;
-        public int ValidCode { get; set; }
+        public int ValidCode { get; set; } = 200;
         public string DistStorage { get; set; }
         public bool StartPing()
         {
