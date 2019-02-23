@@ -1,4 +1,7 @@
 {
 "listHosts":"./listHosts.json",
-"fileLogs":"FileLogs.txt"
+"fileLogs":"FileLogs.txt",
+"ICMPConfigListHosts":"Host,Period,DistStorage",
+"HTTPConfigListHosts":"Host,Period,ValidCode,DistStorage",
+"TCPConfigListHosts":"Host,Period,Port,DistStorage"
 }

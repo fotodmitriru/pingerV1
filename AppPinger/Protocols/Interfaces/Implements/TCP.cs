@@ -9,24 +9,17 @@ namespace AppPinger.Protocols.Interfaces.Implements
     {
         public string Host { get; set; }
         public int Period { get; set; }
-        public int Port { get; set; } = 1;
+        public int Port { get; set; }
+        public string DistStorage { get; set; }
         public event DelegatePingCompleted PingCompleted;
 
-        public bool StartPing(ConfigProtocol confProtocol)
+        public bool StartPing()
         {
-            if (confProtocol == null)
-                throw new ArgumentException("Не заданы параметры для протокола TCP!");
+            if (Host.Length == 0)
+                throw new ArgumentException("Не указан адрес для пинга!");
+            if (Period == 0)
+                throw new ArgumentException("Не указан период для пинга!");
 
-            Host = confProtocol.Host ?? throw new NullReferenceException("Параметр Host не задан!");
-            if (confProtocol.AdditionalAttributes != null && confProtocol.AdditionalAttributes.Length > 0)
-            {
-                Period = Convert.ToInt32(confProtocol.AdditionalAttributes[Period]);
-                Port = Convert.ToInt32(confProtocol.AdditionalAttributes[Port]);
-            }
-            else
-            {
-                throw new NullReferenceException("Не заданы дополнительные параметры (AdditionalAttributes)!");
-            }
             StartAsync();
             return true;
         }
@@ -38,11 +31,12 @@ namespace AppPinger.Protocols.Interfaces.Implements
                 int timeOut;
                 using (TcpClient tcpClient = new TcpClient())
                 {
-                    timeOut = (tcpClient.ConnectAsync(Host, Port).Wait(1000)) 
-                                ? Period * 1000 : (Period - 1) * 1000;
+                    timeOut = (tcpClient.ConnectAsync(Host, Port).Wait(1000))
+                        ? Period * 1000
+                        : (Period - 1) * 1000;
                     string replyLog = string.Format("TCP: {0:dd MMMM yyyy HH:mm:ss} {1} {2}", DateTime.Now, Host,
                         (tcpClient.Connected) ? "Success" : "Failed");
-                    PingCompleted?.Invoke(replyLog);
+                    PingCompleted?.Invoke(replyLog, DistStorage);
                 }
 
                 Thread.Sleep(timeOut);

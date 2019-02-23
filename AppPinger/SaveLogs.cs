@@ -16,6 +16,7 @@ namespace AppPinger
                 {
                     throw new ArgumentNullException("distStorage", "Не указан путь сохранения логов!");
                 }
+
                 distStorage = GlobalDistStorage;
             }
 

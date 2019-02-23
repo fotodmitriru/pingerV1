@@ -18,8 +18,8 @@ namespace AppPinger
 
             // Create service provider
             var serviceProvider = serviceCollection.BuildServiceProvider();
-            var app = new ApplicationBuilder(serviceProvider);
-            var listConfig = app.ApplicationServices.GetService<IListConfigProtocols>();
+            var appBuilder = new ApplicationBuilder(serviceProvider);
+            var listConfig = appBuilder.ApplicationServices.GetService<IListConfigProtocols>();
 
             if (listConfig.ReadConfig(appConfig["listHosts"]))
             {
@@ -33,7 +33,7 @@ namespace AppPinger
             }
 
             SaveLogs.GlobalDistStorage = appConfig["fileLogs"];
-            new PingProtocols(app, appConfig, true);
+            new PingProtocols(appBuilder, appConfig, true);
             Console.WriteLine("Все пинги запущены, для выхода из программы нажмите любую клавишу.");
             Console.ReadLine();
         }

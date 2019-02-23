@@ -7,9 +7,8 @@ namespace AppPinger.Protocols.Interfaces
     {
         string Host { get; set; }
         int Period { get; set; }
-        bool StartPing(ConfigProtocol confProtocol);
+        string DistStorage { get; set; }
+        bool StartPing();
         event DelegatePingCompleted PingCompleted;
     }
-
-    public delegate void DelegatePingCompleted(string replyLog);
 }

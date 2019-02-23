@@ -10,23 +10,14 @@ namespace AppPinger.Protocols.Interfaces.Implements
     {
         public string Host { get; set; }
         public int Period { get; set; }
+        public string DistStorage { get; set; }
 
-        public bool StartPing(ConfigProtocol confProtocol)
+        public bool StartPing()
         {
-            if (confProtocol == null)
-                throw new ArgumentException("Не заданы параметры для протокола ICMP!");
-            Host = confProtocol.Host ??
-                   throw new NullReferenceException(string.Format("Параметр Host не задан для {0}!",
-                       confProtocol.NameProt));
-            if (confProtocol.AdditionalAttributes.Length > 0)
-                Period = Convert.ToInt32(confProtocol.AdditionalAttributes[Period]);
-            else
-            {
-                throw new NullReferenceException("Не заданы дополнительные параметры (AdditionalAttributes)!");
-            }
-
             if (Host.Length == 0)
                 throw new ArgumentException("Не указан адрес для пинга!");
+            if (Period == 0)
+                throw new ArgumentException("Не указан период для пинга!");
 
             StartAsync();
             return true;
@@ -60,13 +51,13 @@ namespace AppPinger.Protocols.Interfaces.Implements
             string replyLog;
             if (ev.Cancelled)
             {
-                PingCompleted?.Invoke("ICMP: Пинг отменён.");
+                PingCompleted?.Invoke("ICMP: Пинг отменён.", DistStorage);
                 ((AutoResetEvent) ev.UserState).Set();
             }
 
             if (ev.Error != null)
             {
-                PingCompleted?.Invoke(string.Format("ICMP: Ошибка пинга: {0}", ev.Error));
+                PingCompleted?.Invoke(string.Format("ICMP: Ошибка пинга: {0}", ev.Error), DistStorage);
                 ((AutoResetEvent) ev.UserState).Set();
             }
 
@@ -74,7 +65,7 @@ namespace AppPinger.Protocols.Interfaces.Implements
             replyLog = string.Format("ICMP: {0} {1} {2}", DateTime.Now.ToString("dd MMMM yyyy HH:mm:ss"), Host,
                 pingReply.Status);
             ((AutoResetEvent)ev.UserState).Set();
-            PingCompleted?.Invoke(replyLog);
+            PingCompleted?.Invoke(replyLog, DistStorage);
         }
     }
 }

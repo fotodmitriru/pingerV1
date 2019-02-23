@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28010.2041
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppPinger", "AppPinger\AppPinger.csproj", "{206AD55D-7F32-444A-BB83-9336858F303A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppPinger", "AppPinger\AppPinger.csproj", "{206AD55D-7F32-444A-BB83-9336858F303A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{BE1D0A48-B64E-467B-B077-000D6D527104}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
