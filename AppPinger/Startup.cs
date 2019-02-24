@@ -12,6 +12,8 @@ namespace AppPinger
     {
         public static void InitPinger(IConfiguration appConfig)
         {
+            if (appConfig == null)
+                throw new NullReferenceException(string.Format("Параметр {0} не задан!", (IConfiguration) null));
             // Create service collection
             var serviceCollection = new ServiceCollection();
             ConfigurePinger(serviceCollection);

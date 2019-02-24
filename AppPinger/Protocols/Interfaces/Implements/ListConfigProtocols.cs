@@ -7,7 +7,7 @@ using Newtonsoft.Json;
 
 namespace AppPinger.Protocols.Interfaces.Implements
 {
-    class ListConfigProtocols: IListConfigProtocols
+    public class ListConfigProtocols: IListConfigProtocols
     {
         public IList<ConfigProtocol> ListConfProtocols { get; set; }
         public bool ReadConfig(string distSource)

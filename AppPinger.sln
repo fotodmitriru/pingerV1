@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppPinger", "AppPinger\AppP
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{BE1D0A48-B64E-467B-B077-000D6D527104}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NUnitPingerTests", "Tests\NUnitPingerTests\NUnitPingerTests.csproj", "{7986918B-3F81-4773-BD13-18E3CF8E3373}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -17,9 +19,16 @@ Global
 		{206AD55D-7F32-444A-BB83-9336858F303A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{206AD55D-7F32-444A-BB83-9336858F303A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{206AD55D-7F32-444A-BB83-9336858F303A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7986918B-3F81-4773-BD13-18E3CF8E3373}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7986918B-3F81-4773-BD13-18E3CF8E3373}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7986918B-3F81-4773-BD13-18E3CF8E3373}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7986918B-3F81-4773-BD13-18E3CF8E3373}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{7986918B-3F81-4773-BD13-18E3CF8E3373} = {BE1D0A48-B64E-467B-B077-000D6D527104}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {40552C86-E9FD-43E2-8E28-C3E995FBFC5A}
