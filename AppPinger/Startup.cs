@@ -40,12 +40,6 @@ namespace AppPinger
             Console.ReadLine();
         }
 
-        private static ICMP GetPingProtocol(IServiceProvider p)
-        {
-            var cp = p.GetService<ConfigProtocol>();
-            return cp.NameProt == "ICMP" ? new ICMP(cp) : null;
-        }
-
         private static void ConfigurePinger(IServiceCollection serviceCollection)
         {
             if (serviceCollection == null)

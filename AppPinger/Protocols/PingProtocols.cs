@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 using AppPinger.Protocols.Implements;
 using AppPinger.Protocols.Interfaces;
 using Microsoft.AspNetCore.Builder;
@@ -32,20 +31,19 @@ namespace AppPinger.Protocols
             var listConfigProtocols = appBuilder.ApplicationServices.GetService<IListConfigProtocols>();
             foreach (var confProtocol in listConfigProtocols.ListConfProtocols)
             {
-                IBasePingProtocol pingProtocol = null;
-                if (confProtocol.NameProt == "ICMP")
+                if (confProtocol.NameProt == EnumProtocols.Icmp)
                 {
                     confProtocol.HeadersAddAttr = _configuration["ICMPConfigListHosts"].Split(",").ToList();
                     serviceCollection.AddSingleton<IBasePingProtocol>(x => ActivatorUtilities.CreateInstance<ICMP>(x, confProtocol));
                 }
 
-                if (confProtocol.NameProt == "HTTP")
+                if (confProtocol.NameProt == EnumProtocols.Http)
                 {
                     confProtocol.HeadersAddAttr = _configuration["HTTPConfigListHosts"].Split(",").ToList();
                     serviceCollection.AddSingleton<IBasePingProtocol>(x => ActivatorUtilities.CreateInstance<HTTP>(x, confProtocol));
                 }
 
-                if (confProtocol.NameProt == "TCP")
+                if (confProtocol.NameProt == EnumProtocols.Tcp)
                 {
                     confProtocol.HeadersAddAttr = _configuration["TCPConfigListHosts"].Split(",").ToList();
                     serviceCollection.AddSingleton<IBasePingProtocol>(x => ActivatorUtilities.CreateInstance<TCP>(x, confProtocol));
@@ -53,7 +51,7 @@ namespace AppPinger.Protocols
 
                 var serviceProvider = serviceCollection.BuildServiceProvider();
                 var appBuild = new ApplicationBuilder(serviceProvider);
-                pingProtocol = appBuild.ApplicationServices.GetService<IBasePingProtocol>();
+                var pingProtocol = appBuild.ApplicationServices.GetService<IBasePingProtocol>();
                 if (pingProtocol != null)
                 {
                     pingProtocol.PingCompleted += PrintAnswerLog;
