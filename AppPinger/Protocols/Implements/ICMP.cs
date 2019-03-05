@@ -3,20 +3,31 @@ using System.Net.NetworkInformation;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using AppPinger.Protocols.Interfaces;
 
-namespace AppPinger.Protocols.Interfaces.Implements
+namespace AppPinger.Protocols.Implements
 {
-    class ICMP : IICMP
+    class ICMP : IBasePingProtocol
     {
-        public string Host { get; set; }
-        public int Period { get; set; }
-        public string DistStorage { get; set; }
+        private readonly string _host;
+        private readonly int _period;
+        private readonly string _distStorage;
+
+        public ICMP(ConfigProtocol configProtocol)
+        {
+            if (configProtocol == null)
+                throw new ArgumentNullException(nameof(configProtocol));
+
+            _host = (string) configProtocol.GetAdditionalAttribute("Host");
+            _period = Convert.ToInt32(configProtocol.GetAdditionalAttribute("Period"));
+            _distStorage = (string)configProtocol.GetAdditionalAttribute("DistStorage");
+        }
 
         public bool StartPing()
         {
-            if (Host.Length == 0)
+            if (_host.Length == 0)
                 throw new ArgumentException("Не указан адрес для пинга!");
-            if (Period == 0)
+            if (_period == 0)
                 throw new ArgumentException("Не указан период для пинга!");
 
             StartAsync();
@@ -37,10 +48,10 @@ namespace AppPinger.Protocols.Interfaces.Implements
                     PingOptions pingOptions = new PingOptions(64, true);
                     int timeout = 1000;
 
-                    pingSender.SendAsync(Host, timeout, buffer, pingOptions, waiter);
+                    pingSender.SendAsync(_host, timeout, buffer, pingOptions, waiter);
                 }
 
-                Thread.Sleep(Period * 1000);
+                Thread.Sleep(_period * 1000);
             }
         });
 
@@ -51,21 +62,21 @@ namespace AppPinger.Protocols.Interfaces.Implements
             string replyLog;
             if (ev.Cancelled)
             {
-                PingCompleted?.Invoke("ICMP: Пинг отменён.", DistStorage);
+                PingCompleted?.Invoke("ICMP: Пинг отменён.", _distStorage);
                 ((AutoResetEvent) ev.UserState).Set();
             }
 
             if (ev.Error != null)
             {
-                PingCompleted?.Invoke(string.Format("ICMP: Ошибка пинга: {0}", ev.Error), DistStorage);
+                PingCompleted?.Invoke(string.Format("ICMP: Ошибка пинга: {0}", ev.Error), _distStorage);
                 ((AutoResetEvent) ev.UserState).Set();
             }
 
             PingReply pingReply = ev.Reply;
-            replyLog = string.Format("ICMP: {0} {1} {2}", DateTime.Now.ToString("dd MMMM yyyy HH:mm:ss"), Host,
+            replyLog = string.Format("ICMP: {0} {1} {2}", DateTime.Now.ToString("dd MMMM yyyy HH:mm:ss"), _host,
                 pingReply.Status);
             ((AutoResetEvent)ev.UserState).Set();
-            PingCompleted?.Invoke(replyLog, DistStorage);
+            PingCompleted?.Invoke(replyLog, _distStorage);
         }
     }
 }

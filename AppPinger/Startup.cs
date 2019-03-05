@@ -1,7 +1,7 @@
 ﻿using System;
 using AppPinger.Protocols;
 using AppPinger.Protocols.Interfaces;
-using AppPinger.Protocols.Interfaces.Implements;
+using AppPinger.Protocols.Implements;
 using Microsoft.AspNetCore.Builder.Internal;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -33,21 +33,26 @@ namespace AppPinger
                 Console.ReadKey();
                 return;
             }
-
+            //ConfigurePinger(serviceCollection);
             SaveLogs.GlobalDistStorage = appConfig["fileLogs"];
-            new PingProtocols(appBuilder, appConfig, true);
+            new PingProtocols(appBuilder, appConfig, serviceCollection, true);
             Console.WriteLine("Все пинги запущены, для выхода из программы нажмите любую клавишу.");
             Console.ReadLine();
         }
 
+        private static ICMP GetPingProtocol(IServiceProvider p)
+        {
+            var cp = p.GetService<ConfigProtocol>();
+            return cp.NameProt == "ICMP" ? new ICMP(cp) : null;
+        }
+
         private static void ConfigurePinger(IServiceCollection serviceCollection)
         {
-            serviceCollection.AddOptions();
+            if (serviceCollection == null)
+                throw new ArgumentNullException(nameof(serviceCollection));
+
             serviceCollection.AddTransient<ConfigProtocol>();
             serviceCollection.AddSingleton<IListConfigProtocols, ListConfigProtocols>();
-            serviceCollection.AddTransient<IICMP, ICMP>();
-            serviceCollection.AddTransient<IHTTP, HTTP>();
-            serviceCollection.AddTransient<ITCP, TCP>();
         }
     }
 }

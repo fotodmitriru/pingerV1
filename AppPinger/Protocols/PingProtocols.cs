@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
+using AppPinger.Protocols.Implements;
 using AppPinger.Protocols.Interfaces;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Builder.Internal;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -11,16 +14,17 @@ namespace AppPinger.Protocols
     {
         private readonly IConfiguration _configuration;
 
-        public PingProtocols(IApplicationBuilder appBuilder, IConfiguration appConfig, bool startPing = false)
+        public PingProtocols(IApplicationBuilder appBuilder, IConfiguration appConfig,
+            IServiceCollection serviceCollection, bool startPing = false)
         {
             _configuration = appConfig ??
                              throw new NullReferenceException(string.Format("Параметр {0} не задан!",
                                  (IConfiguration) null));
             if (startPing)
-                StartPing(appBuilder);
+                StartPing(appBuilder, serviceCollection);
         }
 
-        public bool StartPing(IApplicationBuilder appBuilder)
+        public bool StartPing(IApplicationBuilder appBuilder, IServiceCollection serviceCollection)
         {
             if (appBuilder == null)
                 throw new NullReferenceException(string.Format("Параметр {0} не задан!", (IApplicationBuilder) null));
@@ -32,34 +36,28 @@ namespace AppPinger.Protocols
                 if (confProtocol.NameProt == "ICMP")
                 {
                     confProtocol.HeadersAddAttr = _configuration["ICMPConfigListHosts"].Split(",").ToList();
-                    pingProtocol = appBuilder.ApplicationServices.GetService<IICMP>();
+                    serviceCollection.AddSingleton<IBasePingProtocol>(x => ActivatorUtilities.CreateInstance<ICMP>(x, confProtocol));
                 }
 
                 if (confProtocol.NameProt == "HTTP")
                 {
                     confProtocol.HeadersAddAttr = _configuration["HTTPConfigListHosts"].Split(",").ToList();
-                    pingProtocol = appBuilder.ApplicationServices.GetService<IHTTP>();
+                    serviceCollection.AddSingleton<IBasePingProtocol>(x => ActivatorUtilities.CreateInstance<HTTP>(x, confProtocol));
                 }
 
                 if (confProtocol.NameProt == "TCP")
                 {
                     confProtocol.HeadersAddAttr = _configuration["TCPConfigListHosts"].Split(",").ToList();
-                    pingProtocol = appBuilder.ApplicationServices.GetService<ITCP>();
+                    serviceCollection.AddSingleton<IBasePingProtocol>(x => ActivatorUtilities.CreateInstance<TCP>(x, confProtocol));
                 }
 
+                var serviceProvider = serviceCollection.BuildServiceProvider();
+                var appBuild = new ApplicationBuilder(serviceProvider);
+                pingProtocol = appBuild.ApplicationServices.GetService<IBasePingProtocol>();
                 if (pingProtocol != null)
                 {
-                    pingProtocol.Host = (string)confProtocol.GetAdditionalAttribute("Host");
-                    pingProtocol.Period = Convert.ToInt32(confProtocol.GetAdditionalAttribute("Period"));
-                    pingProtocol.DistStorage = (string)confProtocol.GetAdditionalAttribute("DistStorage") ?? "";
                     pingProtocol.PingCompleted += PrintAnswerLog;
-                    
-                    dynamic p = pingProtocol;
-                    if (p is IHTTP)
-                        p.ValidCode = Convert.ToInt32(confProtocol.GetAdditionalAttribute("ValidCode"));
-                    if(p is ITCP)
-                        p.Port = Convert.ToInt32(confProtocol.GetAdditionalAttribute("Port"));
-                    p.StartPing();
+                    pingProtocol.StartPing();
                 }
             }
 

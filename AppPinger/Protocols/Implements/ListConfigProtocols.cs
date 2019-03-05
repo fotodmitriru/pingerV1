@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Xml.Serialization;
+using AppPinger.Protocols.Interfaces;
 using Newtonsoft.Json;
 
-namespace AppPinger.Protocols.Interfaces.Implements
+namespace AppPinger.Protocols.Implements
 {
     public class ListConfigProtocols: IListConfigProtocols
     {
@@ -23,7 +23,7 @@ namespace AppPinger.Protocols.Interfaces.Implements
             }
             catch (Exception e)
             {
-                throw new NullReferenceException("Ошибка! Проверьте формат файла настроек!"); ;
+                throw new NullReferenceException("Ошибка! Проверьте формат файла настроек!");
             }
 
             return ListConfProtocols.Any();

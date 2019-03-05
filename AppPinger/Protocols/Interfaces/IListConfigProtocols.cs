@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using AppPinger.Protocols.Interfaces.Implements;
 
 namespace AppPinger.Protocols.Interfaces
 {
