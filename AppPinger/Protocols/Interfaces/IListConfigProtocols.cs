@@ -6,5 +6,6 @@ namespace AppPinger.Protocols.Interfaces
     {
         IList<ConfigProtocol> ListConfProtocols { get; set; }
         bool ReadConfig(string distSource);
+        bool WriteConfig(string distSource);
     }
 }

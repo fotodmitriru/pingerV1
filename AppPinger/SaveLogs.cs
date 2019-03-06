@@ -10,7 +10,7 @@ namespace AppPinger
 
         public static async void WriteLogAsync(string dataLog, string distStorage = "")
         {
-            if (distStorage == string.Empty)
+            if (string.IsNullOrEmpty(distStorage))
             {
                 if (string.IsNullOrEmpty(GlobalDistStorage))
                 {

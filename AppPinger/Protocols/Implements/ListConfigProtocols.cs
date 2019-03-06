@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Json;
 using AppPinger.Protocols.Interfaces;
-using Newtonsoft.Json;
 
 namespace AppPinger.Protocols.Implements
 {
@@ -15,18 +16,30 @@ namespace AppPinger.Protocols.Implements
             if (!File.Exists(distSource))
                 return false;
 
-            var json = File.ReadAllText(distSource);
-            try
+            using (Stream reader = new FileStream(distSource, FileMode.Open))
             {
-                var jsonDeser = JsonConvert.DeserializeObject<IList<ConfigProtocol>>(json);
-                ListConfProtocols = jsonDeser;
-            }
-            catch (Exception e)
-            {
-                throw new NullReferenceException("Ошибка! Проверьте формат файла настроек!");
+                DataContractJsonSerializer ser = new DataContractJsonSerializer(typeof(IList<ConfigProtocol>));
+                try
+                {
+                    ListConfProtocols = ser.ReadObject(reader) as IList<ConfigProtocol>;
+                }
+                catch (SerializationException e)
+                {
+                    throw new SerializationException("Проверьте формат файла JSON!", e);
+                }
             }
 
-            return ListConfProtocols.Any();
+            return (ListConfProtocols ?? throw new InvalidOperationException()).Any();
+        }
+        public bool WriteConfig(string distSource)
+        {
+            using (Stream writer = new FileStream(distSource, FileMode.Create))
+            {
+                DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(IList<ConfigProtocol>));
+                serializer.WriteObject(writer, ListConfProtocols);
+            }
+
+            return true;
         }
     }
 

@@ -11,45 +11,43 @@ namespace AppPinger.Protocols
 {
     public class PingProtocols
     {
-        private readonly IConfiguration _configuration;
+        private readonly IApplicationBuilder _appBuilder;
+        private readonly IServiceCollection _serviceCollection;
 
-        public PingProtocols(IApplicationBuilder appBuilder, IConfiguration appConfig,
-            IServiceCollection serviceCollection, bool startPing = false)
+        public PingProtocols(IApplicationBuilder appBuilder, IServiceCollection serviceCollection,
+            bool startPing = false)
         {
-            _configuration = appConfig ??
-                             throw new NullReferenceException(string.Format("Параметр {0} не задан!",
-                                 (IConfiguration) null));
+            _appBuilder = appBuilder ?? 
+                                 throw new NullReferenceException(string.Format("Параметр {0} не задан!",
+                                     (IApplicationBuilder) null));
+            _serviceCollection = serviceCollection ?? 
+                                 throw new NullReferenceException(string.Format("Параметр {0} не задан!",
+                                     (IServiceCollection) null));
             if (startPing)
-                StartPing(appBuilder, serviceCollection);
+                StartPing();
         }
 
-        public bool StartPing(IApplicationBuilder appBuilder, IServiceCollection serviceCollection)
+        public bool StartPing()
         {
-            if (appBuilder == null)
+            if (_appBuilder == null)
                 throw new NullReferenceException(string.Format("Параметр {0} не задан!", (IApplicationBuilder) null));
 
-            var listConfigProtocols = appBuilder.ApplicationServices.GetService<IListConfigProtocols>();
+            var listConfigProtocols = _appBuilder.ApplicationServices.GetService<IListConfigProtocols>();
             foreach (var confProtocol in listConfigProtocols.ListConfProtocols)
             {
                 if (confProtocol.NameProt == EnumProtocols.Icmp)
-                {
-                    confProtocol.HeadersAddAttr = _configuration["ICMPConfigListHosts"].Split(",").ToList();
-                    serviceCollection.AddSingleton<IBasePingProtocol>(x => ActivatorUtilities.CreateInstance<ICMP>(x, confProtocol));
-                }
+                    _serviceCollection.AddSingleton<IBasePingProtocol>(x =>
+                        ActivatorUtilities.CreateInstance<ICMP>(x, confProtocol));
 
                 if (confProtocol.NameProt == EnumProtocols.Http)
-                {
-                    confProtocol.HeadersAddAttr = _configuration["HTTPConfigListHosts"].Split(",").ToList();
-                    serviceCollection.AddSingleton<IBasePingProtocol>(x => ActivatorUtilities.CreateInstance<HTTP>(x, confProtocol));
-                }
+                    _serviceCollection.AddSingleton<IBasePingProtocol>(x =>
+                        ActivatorUtilities.CreateInstance<HTTP>(x, confProtocol));
 
                 if (confProtocol.NameProt == EnumProtocols.Tcp)
-                {
-                    confProtocol.HeadersAddAttr = _configuration["TCPConfigListHosts"].Split(",").ToList();
-                    serviceCollection.AddSingleton<IBasePingProtocol>(x => ActivatorUtilities.CreateInstance<TCP>(x, confProtocol));
-                }
+                    _serviceCollection.AddSingleton<IBasePingProtocol>(x =>
+                        ActivatorUtilities.CreateInstance<TCP>(x, confProtocol));
 
-                var serviceProvider = serviceCollection.BuildServiceProvider();
+                var serviceProvider = _serviceCollection.BuildServiceProvider();
                 var appBuild = new ApplicationBuilder(serviceProvider);
                 var pingProtocol = appBuild.ApplicationServices.GetService<IBasePingProtocol>();
                 if (pingProtocol != null)

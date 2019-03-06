@@ -19,8 +19,8 @@ namespace AppPinger.Protocols.Implements
             if (configProtocol == null)
                 throw new ArgumentNullException(nameof(configProtocol));
 
-            _host = (string)configProtocol.GetAdditionalAttribute("Host");
-            _period = Convert.ToInt32(configProtocol.GetAdditionalAttribute("Period"));
+            _host = configProtocol.Host;
+            _period = configProtocol.Period;
             _port = Convert.ToInt32(configProtocol.GetAdditionalAttribute("Port"));
             _distStorage = (string)configProtocol.GetAdditionalAttribute("DistStorage");
         }
