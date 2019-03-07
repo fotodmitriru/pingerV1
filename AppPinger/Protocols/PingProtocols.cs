@@ -21,6 +21,7 @@ namespace AppPinger.Protocols
             _serviceCollection = serviceCollection ?? 
                                  throw new NullReferenceException(string.Format("Параметр {0} не задан!",
                                      (IServiceCollection) null));
+
             if (startPing)
                 StartPing();
         }
@@ -63,7 +64,7 @@ namespace AppPinger.Protocols
             if (replyLog == null)
                 throw new ArgumentException("Значение переменной не должно быть null.", nameof(replyLog));
             Console.WriteLine(replyLog);
-            SaveLogs.WriteLogAsync(replyLog, distStorage);
+            _appBuilder.ApplicationServices.GetService<SaveLogs>().WriteLogAsyncToFile(replyLog, distStorage);
         }
     }
 }

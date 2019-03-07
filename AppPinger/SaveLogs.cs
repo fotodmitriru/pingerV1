@@ -6,9 +6,9 @@ namespace AppPinger
 {
     class SaveLogs
     {
-        public static string GlobalDistStorage { get; set; }
+        public string GlobalDistStorage { get; set; }
 
-        public static async void WriteLogAsync(string dataLog, string distStorage = "")
+        public async void WriteLogAsyncToFile(string dataLog, string distStorage = "")
         {
             if (string.IsNullOrEmpty(distStorage))
             {

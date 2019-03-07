@@ -40,7 +40,8 @@ namespace AppPinger
                 return;
             }
 
-            SaveLogs.GlobalDistStorage = appConfig["fileLogs"];
+            var saveLogs = appBuilder.ApplicationServices.GetService<SaveLogs>();
+            saveLogs.GlobalDistStorage = appConfig["fileLogs"];
             var pingProtocols = new PingProtocols(appBuilder, serviceCollection);
             pingProtocols.StartPing();
             Console.WriteLine("Все пинги запущены, для выхода из программы нажмите любую клавишу.");
@@ -54,6 +55,7 @@ namespace AppPinger
 
             serviceCollection.AddTransient<ConfigProtocol>();
             serviceCollection.AddSingleton<IListConfigProtocols, ListConfigProtocols>();
+            serviceCollection.AddSingleton<SaveLogs>();
         }
 
         private static void CreateExampleConfig(IApplicationBuilder appBuilder, string fileJsonPath)
