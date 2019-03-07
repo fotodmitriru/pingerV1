@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Linq;
 using AppPinger.Protocols.Implements;
 using AppPinger.Protocols.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Builder.Internal;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace AppPinger.Protocols
@@ -53,7 +51,7 @@ namespace AppPinger.Protocols
                 if (pingProtocol != null)
                 {
                     pingProtocol.PingCompleted += PrintAnswerLog;
-                    pingProtocol.StartPing();
+                    pingProtocol.StartAsyncPing();
                 }
             }
 

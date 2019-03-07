@@ -23,7 +23,7 @@ namespace AppPinger.Protocols.Implements
             _distStorage = (string)configProtocol.GetAdditionalAttribute("DistStorage");
         }
 
-        public bool StartPing()
+        public bool StartAsyncPing()
         {
             if (_host.Length == 0)
                 throw new ArgumentException("Не указан адрес для пинга!");
@@ -34,7 +34,9 @@ namespace AppPinger.Protocols.Implements
             return true;
         }
 
-        async Task StartAsync() => await Task.Run(() =>
+        private async Task StartAsync() => await Task.Run(StartPing);
+
+        private Task StartPing()
         {
             while (true)
             {
@@ -53,7 +55,7 @@ namespace AppPinger.Protocols.Implements
 
                 Thread.Sleep(_period * 1000);
             }
-        });
+        }
 
         public event DelegatePingCompleted PingCompleted;
 

@@ -14,6 +14,7 @@ namespace AppPinger
             if (!File.Exists(pathAppConfig))
             {
                 Console.WriteLine("Файл с конфигурациями приложения не найден!");
+                Console.ReadKey();
                 return;
             }
 

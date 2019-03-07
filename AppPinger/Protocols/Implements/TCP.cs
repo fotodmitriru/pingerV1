@@ -25,7 +25,7 @@ namespace AppPinger.Protocols.Implements
             _distStorage = (string)configProtocol.GetAdditionalAttribute("DistStorage");
         }
 
-        public bool StartPing()
+        public bool StartAsyncPing()
         {
             if (_host.Length == 0)
                 throw new ArgumentException("Не указан адрес для пинга!");
@@ -38,7 +38,9 @@ namespace AppPinger.Protocols.Implements
             return true;
         }
 
-        async Task StartAsync() => await Task.Run(() =>
+        private async Task StartAsync() => await Task.Run(StartPing);
+
+        private Task StartPing()
         {
             while (true)
             {
@@ -48,13 +50,12 @@ namespace AppPinger.Protocols.Implements
                     timeOut = (tcpClient.ConnectAsync(_host, _port).Wait(1000))
                         ? _period * 1000
                         : (_period - 1) * 1000;
-                    string replyLog = string.Format("TCP: {0:dd MMMM yyyy HH:mm:ss} {1} {2}", DateTime.Now, _host,
-                        (tcpClient.Connected) ? "Success" : "Failed");
+                    string replyLog = string.Format("TCP: {0:dd MMMM yyyy HH:mm:ss} {1} {2}", DateTime.Now, _host, (tcpClient.Connected) ? "Success" : "Failed");
                     PingCompleted?.Invoke(replyLog, _distStorage);
                 }
 
                 Thread.Sleep(timeOut);
             }
-        });
+        }
     }
 }

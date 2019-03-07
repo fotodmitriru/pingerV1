@@ -1,6 +1,6 @@
 ﻿using System;
 using System.IO;
-using AppPinger.Protocols.Interfaces.Implements;
+using AppPinger.Protocols.Implements;
 using NUnit.Framework;
 
 namespace NUnitPingerTests

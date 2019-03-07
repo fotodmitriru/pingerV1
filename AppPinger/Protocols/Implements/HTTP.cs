@@ -25,7 +25,7 @@ namespace AppPinger.Protocols.Implements
             _validCode = Convert.ToInt32(configProtocol.GetAdditionalAttribute("ValidCode"));
             _distStorage = (string)configProtocol.GetAdditionalAttribute("DistStorage");
         }
-        public bool StartPing()
+        public bool StartAsyncPing()
         {
             if (_host.Length == 0)
                 throw new ArgumentException("Не указан адрес для пинга!");
@@ -36,7 +36,7 @@ namespace AppPinger.Protocols.Implements
             return true;
         }
 
-        async Task StartAsync()
+        private async Task StartAsync()
         {
             while (true)
             {

@@ -33,6 +33,9 @@ namespace AppPinger.Protocols.Implements
         }
         public bool WriteConfig(string distSource)
         {
+            if (string.IsNullOrEmpty(distSource))
+                throw new ArgumentNullException(nameof(distSource));
+                
             using (Stream writer = new FileStream(distSource, FileMode.Create))
             {
                 DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(IList<ConfigProtocol>));
@@ -42,5 +45,4 @@ namespace AppPinger.Protocols.Implements
             return true;
         }
     }
-
 }

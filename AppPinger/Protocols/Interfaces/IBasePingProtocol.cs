@@ -2,7 +2,7 @@
 {
     public interface IBasePingProtocol
     {
-        bool StartPing();
+        bool StartAsyncPing();
         event DelegatePingCompleted PingCompleted;
     }
 }
