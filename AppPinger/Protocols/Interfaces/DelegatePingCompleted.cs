@@ -1,4 +1,4 @@
 ﻿namespace AppPinger.Protocols.Interfaces
 {
-    public delegate void DelegatePingCompleted(string replyLog, string distStorage = "");
+    public delegate void DelegatePingCompleted(string replyLog, ConfigProtocol confProtocol);
 }

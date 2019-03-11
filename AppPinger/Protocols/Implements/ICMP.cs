@@ -9,18 +9,16 @@ namespace AppPinger.Protocols.Implements
 {
     class ICMP : IBasePingProtocol
     {
+        private readonly ConfigProtocol _configProtocol;
         private readonly string _host;
         private readonly int _period;
-        private readonly string _distStorage;
 
         public ICMP(ConfigProtocol configProtocol)
         {
-            if (configProtocol == null)
-                throw new ArgumentNullException(nameof(configProtocol));
+            _configProtocol = configProtocol ?? throw new ArgumentNullException(nameof(configProtocol));
 
             _host = configProtocol.Host;
             _period = configProtocol.Period;
-            _distStorage = (string)configProtocol.GetAdditionalAttribute("DistStorage");
         }
 
         public bool StartAsyncPing()
@@ -61,24 +59,22 @@ namespace AppPinger.Protocols.Implements
 
         private void PingRoundCompleted(object sender, PingCompletedEventArgs ev)
         {
-            string replyLog;
             if (ev.Cancelled)
             {
-                PingCompleted?.Invoke("ICMP: Пинг отменён.", _distStorage);
+                PingCompleted?.Invoke("Пинг отменён.", _configProtocol);
                 ((AutoResetEvent) ev.UserState).Set();
             }
 
             if (ev.Error != null)
             {
-                PingCompleted?.Invoke(string.Format("ICMP: Ошибка пинга: {0}", ev.Error), _distStorage);
+                PingCompleted?.Invoke($"Ошибка пинга: {ev.Error}", _configProtocol);
                 ((AutoResetEvent) ev.UserState).Set();
             }
 
             PingReply pingReply = ev.Reply;
-            replyLog = string.Format("ICMP: {0} {1} {2}", DateTime.Now.ToString("dd MMMM yyyy HH:mm:ss"), _host,
-                pingReply.Status);
-            ((AutoResetEvent)ev.UserState).Set();
-            PingCompleted?.Invoke(replyLog, _distStorage);
+            var replyLog = $"{DateTime.Now:dd MMMM yyyy HH:mm:ss} {_host} {pingReply.Status}";
+            ((AutoResetEvent) ev.UserState).Set();
+            PingCompleted?.Invoke(replyLog, _configProtocol);
         }
     }
 }

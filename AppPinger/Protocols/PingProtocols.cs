@@ -59,12 +59,16 @@ namespace AppPinger.Protocols
             return true;
         }
 
-        public void PrintAnswerLog(string replyLog, string distStorage = "")
+        public void PrintAnswerLog(string replyLog, ConfigProtocol configProtocol)
         {
             if (replyLog == null)
                 throw new ArgumentException("Значение переменной не должно быть null.", nameof(replyLog));
-            Console.WriteLine(replyLog);
-            _appBuilder.ApplicationServices.GetService<SaveLogs>().WriteLogAsyncToFile(replyLog, distStorage);
+            Console.WriteLine("{0}: {1}", configProtocol.NameProt.ToString(), replyLog);
+            var saveLogs = _appBuilder.ApplicationServices.GetService<SaveLogs>();
+            saveLogs.WriteLogAsyncToFile($"{configProtocol.NameProt.ToString()}: {replyLog}",
+                configProtocol.GetAdditionalAttribute("DistStorage")?.ToString());
+            saveLogs.WriteLogAsyncToSqLite(configProtocol.NameProt.ToString(), replyLog,
+                configProtocol.GetAdditionalAttribute("DistStorageSqLite")?.ToString());
         }
     }
 }

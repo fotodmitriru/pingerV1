@@ -1,4 +1,5 @@
 {
 "listHosts":"./listHosts.json",
-"fileLogs":"FileLogs.txt"
+"fileLogs":"FileLogs.txt",
+"fileLogsSQLite":"Logs.db"
 }

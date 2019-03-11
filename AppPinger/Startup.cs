@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using AppPinger.DB;
+using AppPinger.DB.ConfigureProviders;
 using AppPinger.Protocols;
 using AppPinger.Protocols.Interfaces;
 using AppPinger.Protocols.Implements;
@@ -42,6 +44,9 @@ namespace AppPinger
 
             var saveLogs = appBuilder.ApplicationServices.GetService<SaveLogs>();
             saveLogs.GlobalDistStorage = appConfig["fileLogs"];
+            saveLogs.ViewLogFromSqLite(appConfig["fileLogsSQLite"]);
+            saveLogs.GlobalDistStorageSqLite = appConfig["fileLogsSQLite"];
+
             var pingProtocols = new PingProtocols(appBuilder, serviceCollection);
             pingProtocols.StartPing();
             Console.WriteLine("Все пинги запущены, для выхода из программы нажмите любую клавишу.");
@@ -56,6 +61,8 @@ namespace AppPinger
             serviceCollection.AddTransient<ConfigProtocol>();
             serviceCollection.AddSingleton<IListConfigProtocols, ListConfigProtocols>();
             serviceCollection.AddSingleton<SaveLogs>();
+            serviceCollection.AddSingleton<ConfigureDbSqLite>();
+            serviceCollection.AddSingleton<DbManager>();
         }
 
         private static void CreateExampleConfig(IApplicationBuilder appBuilder, string fileJsonPath)
@@ -70,6 +77,7 @@ namespace AppPinger
             itemIcmp.Period = 1;
             itemIcmp.AttributesProtocol = new Dictionary<string, string>();
             itemIcmp.AttributesProtocol.Add("DistStorage", "ICMPLog.txt");
+            itemIcmp.AttributesProtocol.Add("DistStorageSqLite", "LogsICMP.db");
 
             listConfig.ListConfProtocols = new List<ConfigProtocol>();
             listConfig.ListConfProtocols.Add(itemIcmp);

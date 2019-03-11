@@ -1,0 +1,3 @@
+install-package Microsoft.EntityFrameworkCore.Sqlite
+install-package Microsoft.EntityFrameworkCore.Design
+Install-Package Microsoft.EntityFrameworkCore.Tools

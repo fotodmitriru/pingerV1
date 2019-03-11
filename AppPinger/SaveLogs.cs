@@ -4,21 +4,14 @@ using System.Text;
 
 namespace AppPinger
 {
-    class SaveLogs
+    public partial class SaveLogs
     {
         public string GlobalDistStorage { get; set; }
+        public string GlobalDistStorageSqLite { get; set; }
 
         public async void WriteLogAsyncToFile(string dataLog, string distStorage = "")
         {
-            if (string.IsNullOrEmpty(distStorage))
-            {
-                if (string.IsNullOrEmpty(GlobalDistStorage))
-                {
-                    throw new ArgumentNullException("distStorage", "Не указан путь сохранения логов!");
-                }
-
-                distStorage = GlobalDistStorage;
-            }
+            distStorage = CheckIsNullOrEmptyDistStorage(distStorage, GlobalDistStorage);
 
             try
             {
@@ -32,6 +25,21 @@ namespace AppPinger
             {
                 throw new ArgumentException("Файл логов не удалось сохранить!", e);
             }
+        }
+
+        public string CheckIsNullOrEmptyDistStorage(string distStorage, string globalDistStorage)
+        {
+            if (string.IsNullOrEmpty(distStorage))
+            {
+                if (string.IsNullOrEmpty(GlobalDistStorageSqLite))
+                {
+                    throw new ArgumentNullException("distStorage", "Не указан путь сохранения логов!");
+                }
+
+                return globalDistStorage;
+            }
+
+            return distStorage;
         }
     }
 }

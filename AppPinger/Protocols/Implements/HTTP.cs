@@ -8,22 +8,20 @@ namespace AppPinger.Protocols.Implements
 {
     class HTTP : IBasePingProtocol
     {
+        private readonly ConfigProtocol _configProtocol;
         private readonly string _host;
         private readonly int _period;
 
         public event DelegatePingCompleted PingCompleted;
-        private readonly int _validCode = 200;
-        private readonly string _distStorage;
+        private readonly int _validCode;
 
         public HTTP(ConfigProtocol configProtocol)
         {
-            if (configProtocol == null)
-                throw new ArgumentNullException(nameof(configProtocol));
+            _configProtocol = configProtocol ?? throw new ArgumentNullException(nameof(configProtocol));
 
             _host = configProtocol.Host;
             _period = configProtocol.Period;
             _validCode = Convert.ToInt32(configProtocol.GetAdditionalAttribute("ValidCode"));
-            _distStorage = (string)configProtocol.GetAdditionalAttribute("DistStorage");
         }
         public bool StartAsyncPing()
         {
@@ -49,7 +47,7 @@ namespace AppPinger.Protocols.Implements
                     Uri url;
                     if (!Uri.TryCreate(host, UriKind.Absolute, out url))
                     {
-                        PingCompleted?.Invoke(string.Format("HTTP: Ошибка url {0} для HTTP протокола!", host), _distStorage);
+                        PingCompleted?.Invoke($"Ошибка url {host} для HTTP протокола!", _configProtocol);
                         return;
                     }
 
@@ -57,15 +55,15 @@ namespace AppPinger.Protocols.Implements
                     {
                         HttpResponseMessage httpResponse = await httpClient.GetAsync(url);
                         httpResponse.EnsureSuccessStatusCode();
-                        string replyLog = string.Format("HTTP: {0:dd MMMM yyyy HH:mm:ss} {1} {2}", DateTime.Now, host,
-                            (int) httpResponse.StatusCode == _validCode ? "Success" : "Failed");
+                        string replyLog =
+                            $"{DateTime.Now:dd MMMM yyyy HH:mm:ss} {host} {((int) httpResponse.StatusCode == _validCode ? "Success" : "Failed")}";
 
-                        PingCompleted?.Invoke(replyLog, _distStorage);
+                        PingCompleted?.Invoke(replyLog, _configProtocol);
                     }
                     catch (HttpRequestException e)
                     {
-                        string replyLog = string.Format("\nHTTP: Ошибка :{0} - {1}", url, e.Message);
-                        PingCompleted?.Invoke(replyLog, _distStorage);
+                        string replyLog = $"\nОшибка :{url} - {e.Message}";
+                        PingCompleted?.Invoke(replyLog, _configProtocol);
                     }
                 }
 
