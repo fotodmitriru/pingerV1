@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
@@ -6,12 +7,16 @@ namespace AppPinger
 {
     public partial class SaveLogs
     {
-        public string GlobalDistStorage { get; set; }
-        public string GlobalDistStorageSqLite { get; set; }
+        private readonly Dictionary<string, string> _distStorage;
+
+        public SaveLogs(Dictionary<string, string> distStorage)
+        {
+            _distStorage = distStorage;
+        }
 
         public async void WriteLogAsyncToFile(string dataLog, string distStorage = "")
         {
-            distStorage = CheckIsNullOrEmptyDistStorage(distStorage, GlobalDistStorage);
+            distStorage = CheckIsNullOrEmptyDistStorage(distStorage, GetGlobalDistStorage("globalDistStorage"));
 
             try
             {
@@ -31,7 +36,7 @@ namespace AppPinger
         {
             if (string.IsNullOrEmpty(distStorage))
             {
-                if (string.IsNullOrEmpty(GlobalDistStorageSqLite))
+                if (string.IsNullOrEmpty(globalDistStorage))
                 {
                     throw new ArgumentNullException("distStorage", "Не указан путь сохранения логов!");
                 }
@@ -40,6 +45,14 @@ namespace AppPinger
             }
 
             return distStorage;
+        }
+
+        public string GetGlobalDistStorage(string nameDistStorage)
+        {
+            if (string.IsNullOrEmpty(nameDistStorage))
+                throw new NullReferenceException("Укажите имя атрибута!");
+
+            return (_distStorage.ContainsKey(nameDistStorage)) ? _distStorage[nameDistStorage] : "";
         }
     }
 }

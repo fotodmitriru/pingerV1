@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using AppPinger.DB;
-using AppPinger.DB.ConfigureProviders;
 using AppPinger.Protocols;
 using AppPinger.Protocols.Interfaces;
 using AppPinger.Protocols.Implements;
@@ -22,7 +20,7 @@ namespace AppPinger
 
             // Create service collection
             var serviceCollection = new ServiceCollection();
-            ConfigurePinger(serviceCollection);
+            ConfigurePinger(serviceCollection, appConfig);
 
             // Create service provider
             var serviceProvider = serviceCollection.BuildServiceProvider();
@@ -43,9 +41,8 @@ namespace AppPinger
             }
 
             var saveLogs = appBuilder.ApplicationServices.GetService<SaveLogs>();
-            saveLogs.GlobalDistStorage = appConfig["fileLogs"];
+            Console.WriteLine("Чтение данных из файла {0}", appConfig["fileLogsSQLite"]);
             saveLogs.ViewLogFromSqLite(appConfig["fileLogsSQLite"]);
-            saveLogs.GlobalDistStorageSqLite = appConfig["fileLogsSQLite"];
 
             var pingProtocols = new PingProtocols(appBuilder, serviceCollection);
             pingProtocols.StartPing();
@@ -53,16 +50,19 @@ namespace AppPinger
             Console.ReadLine();
         }
 
-        private static void ConfigurePinger(IServiceCollection serviceCollection)
+        private static void ConfigurePinger(IServiceCollection serviceCollection, IConfiguration appConfig)
         {
             if (serviceCollection == null)
                 throw new ArgumentNullException(nameof(serviceCollection));
 
             serviceCollection.AddTransient<ConfigProtocol>();
             serviceCollection.AddSingleton<IListConfigProtocols, ListConfigProtocols>();
-            serviceCollection.AddSingleton<SaveLogs>();
-            serviceCollection.AddSingleton<ConfigureDbSqLite>();
-            serviceCollection.AddSingleton<DbManager>();
+
+            var globalDistStorage = new Dictionary<string, string>();
+            globalDistStorage.Add("globalDistStorage", appConfig["fileLogs"]);
+            globalDistStorage.Add("globalDistStorageSqLite", appConfig["fileLogsSQLite"]);
+            serviceCollection.AddSingleton(x =>
+                ActivatorUtilities.CreateInstance<SaveLogs>(x, globalDistStorage));
         }
 
         private static void CreateExampleConfig(IApplicationBuilder appBuilder, string fileJsonPath)

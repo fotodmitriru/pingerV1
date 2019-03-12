@@ -7,7 +7,7 @@ namespace AppPinger
     {
         public void WriteLogAsyncToSqLite(string nameProtocol, string dataLog, string distStorage = "")
         {
-            distStorage = CheckIsNullOrEmptyDistStorage(distStorage, GlobalDistStorageSqLite);
+            distStorage = CheckIsNullOrEmptyDistStorage(distStorage, GetGlobalDistStorage("globalDistStorageSqLite"));
 
             var sqliteDb = new DbManager();
             sqliteDb.WriteToDbAsync(nameProtocol, dataLog, $"Data Source={distStorage}", EnumProviderDb.SqLite);
@@ -15,7 +15,7 @@ namespace AppPinger
 
         public void ViewLogFromSqLite(string distStorage = "")
         {
-            distStorage = CheckIsNullOrEmptyDistStorage(distStorage, GlobalDistStorageSqLite);
+            distStorage = CheckIsNullOrEmptyDistStorage(distStorage, GetGlobalDistStorage("globalDistStorageSqLite"));
 
             var sqliteDb = new DbManager();
             sqliteDb.ViewDb($"Data Source={distStorage}", EnumProviderDb.SqLite);
