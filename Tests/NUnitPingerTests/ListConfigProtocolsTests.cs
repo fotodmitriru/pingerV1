@@ -1,5 +1,5 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
+using System.Runtime.Serialization;
 using AppPinger.Protocols.Implements;
 using NUnit.Framework;
 
@@ -34,8 +34,8 @@ namespace NUnitPingerTests
         [Test]
         public void ListConfigProtocols_for_func_ReadConfig_onFileFailedStructure()
         {
-            Assert.Throws<NullReferenceException>(() =>
-                _listConfigProtocols.ReadConfig(_pathAppConfig + "appConfig.json"));
+            Assert.Throws<SerializationException>(() =>
+                _listConfigProtocols.ReadConfig(_pathAppConfig + "failedListHosts.json"));
         }
     }
 }

@@ -14,6 +14,9 @@ namespace AppPinger.Protocols
         {
             if (string.IsNullOrEmpty(nameAttribute))
                 throw new NullReferenceException("Укажите имя атрибута!");
+            if (AttributesProtocol == null)
+                throw new NullReferenceException("Не создан контейнер с атрибутами!");
+
             return (AttributesProtocol.ContainsKey(nameAttribute)) ? AttributesProtocol[nameAttribute] : null;
         }
     }
