@@ -40,7 +40,7 @@ namespace AppPinger.DB
             }
         }
 
-        public void ViewDb(string dbConnectionString, EnumProviderDb enumProvider)
+        public List<LogModel> ViewDb(string dbConnectionString, EnumProviderDb enumProvider)
         {
             dynamic db = null;
             switch (enumProvider)
@@ -51,13 +51,9 @@ namespace AppPinger.DB
             }
 
             if (db != null)
-            {
-                List<LogModel> logsMod = new List<LogModel>(db.LogsModel);
-                foreach (var logMod in logsMod)
-                {
-                    Console.WriteLine(logMod.NameProtocol + ":" + logMod.DataLog);
-                }
-            }
+                return new List<LogModel>(db.LogsModel);
+
+            return new List<LogModel>();
         }
 
         public IApplicationBuilder InitDbProvider(string dbConnectionString)

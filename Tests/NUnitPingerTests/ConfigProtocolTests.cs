@@ -6,7 +6,7 @@ using NUnit.Framework;
 namespace NUnitPingerTests
 {
     [TestFixture()]
-    class ConfigProtocolTest
+    class ConfigProtocolTests
     {
         private ConfigProtocol _configProtocol;
 
@@ -14,7 +14,6 @@ namespace NUnitPingerTests
         public void Setup()
         {
             _configProtocol = new ConfigProtocol();
-
         }
 
         [Test]

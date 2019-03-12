@@ -11,7 +11,7 @@ namespace AppPinger
 
         public SaveLogs(Dictionary<string, string> distStorage)
         {
-            _distStorage = distStorage;
+            _distStorage = distStorage ?? throw new ArgumentNullException(nameof(distStorage), "Не указаны пути сохранения логов!");
         }
 
         public async void WriteLogAsyncToFile(string dataLog, string distStorage = "")
