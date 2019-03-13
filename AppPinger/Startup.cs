@@ -11,7 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace AppPinger
 {
-    public class Startup
+    public sealed class Startup
     {
         public static void InitPinger(IConfiguration appConfig)
         {
@@ -44,10 +44,10 @@ namespace AppPinger
             Console.WriteLine("Чтение данных из файла {0}", appConfig["fileLogsSQLite"]);
             saveLogs.ViewLogFromSqLite(appConfig["fileLogsSQLite"]);
 
-            var pingProtocols = new PingProtocols(appBuilder, serviceCollection);
+            var pingProtocols = new PingProtocols(appBuilder, serviceCollection, listConfig);
             pingProtocols.StartPing();
             Console.WriteLine("Все пинги запущены, для выхода из программы нажмите любую клавишу.");
-            Console.ReadLine();
+            Console.ReadLine();//comment this string before test.
         }
 
         private static void ConfigurePinger(IServiceCollection serviceCollection, IConfiguration appConfig)

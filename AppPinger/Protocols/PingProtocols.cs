@@ -11,16 +11,21 @@ namespace AppPinger.Protocols
     {
         private readonly IApplicationBuilder _appBuilder;
         private readonly IServiceCollection _serviceCollection;
+        private IListConfigProtocols _listConfigProtocols;
 
         public PingProtocols(IApplicationBuilder appBuilder, IServiceCollection serviceCollection,
-            bool startPing = false)
+            IListConfigProtocols listConfigProtocols, bool startPing = false)
         {
-            _appBuilder = appBuilder ?? 
-                                 throw new NullReferenceException(string.Format("Параметр {0} не задан!",
-                                     (IApplicationBuilder) null));
-            _serviceCollection = serviceCollection ?? 
+            _appBuilder = appBuilder ??
+                          throw new NullReferenceException(string.Format("Параметр {0} не задан!",
+                              (IApplicationBuilder) null));
+            _serviceCollection = serviceCollection ??
                                  throw new NullReferenceException(string.Format("Параметр {0} не задан!",
                                      (IServiceCollection) null));
+
+            _listConfigProtocols = listConfigProtocols ??
+                                   throw new NullReferenceException(string.Format("Параметр {0} не задан!",
+                                       (IListConfigProtocols) null));
 
             if (startPing)
                 StartPing();
@@ -28,11 +33,11 @@ namespace AppPinger.Protocols
 
         public bool StartPing()
         {
-            if (_appBuilder == null)
-                throw new NullReferenceException(string.Format("Параметр {0} не задан!", (IApplicationBuilder) null));
+            if (_listConfigProtocols.ListConfProtocols == null)
+                throw new NullReferenceException(string.Format("Параметр {0} не задан!",
+                    nameof(_listConfigProtocols.ListConfProtocols)));
 
-            var listConfigProtocols = _appBuilder.ApplicationServices.GetService<IListConfigProtocols>();
-            foreach (var confProtocol in listConfigProtocols.ListConfProtocols)
+            foreach (var confProtocol in _listConfigProtocols.ListConfProtocols)
             {
                 if (confProtocol.NameProt == EnumProtocols.Icmp)
                     _serviceCollection.AddSingleton<IBasePingProtocol>(x =>
@@ -57,6 +62,15 @@ namespace AppPinger.Protocols
             }
 
             return true;
+        }
+
+        public bool StartPing(IListConfigProtocols listConfigProtocols)
+        {
+            _listConfigProtocols = listConfigProtocols ??
+                                   throw new NullReferenceException(string.Format("Параметр {0} не задан!",
+                                       (IListConfigProtocols)null));
+
+            return StartPing();
         }
 
         public void PrintAnswerLog(string replyLog, ConfigProtocol configProtocol)

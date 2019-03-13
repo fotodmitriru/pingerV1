@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using AppPinger.Protocols;
 using NUnit.Framework;
 
-namespace NUnitPingerTests
+namespace NUnitPingerTests.Protocols
 {
     [TestFixture()]
     class ConfigProtocolTests
