@@ -6,7 +6,7 @@ using AppPinger.Protocols.Interfaces;
 
 namespace AppPinger.Protocols.Implements
 {
-    class HTTP : IBasePingProtocol
+    public class HTTP : IBasePingProtocol
     {
         private readonly ConfigProtocol _configProtocol;
         private readonly string _host;
@@ -25,7 +25,7 @@ namespace AppPinger.Protocols.Implements
         }
         public bool StartAsyncPing()
         {
-            if (_host.Length == 0)
+            if (string.IsNullOrEmpty(_host))
                 throw new ArgumentException("Не указан адрес для пинга!");
             if (_period == 0)
                 throw new ArgumentException("Не указан период для пинга!");
