@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace AppPinger.DB
 {
-    class LogModel
+    public class LogModel
     {
         [Key]
         [Required(ErrorMessage = "Параметр IdLog не может быть пустым.")]

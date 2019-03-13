@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using AppPinger.DB.ConfigureProviders;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Builder.Internal;
@@ -7,16 +8,29 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace AppPinger.DB
 {
-    internal class DbManager
+    public class DbManager
     {
-        public async void WriteToDbAsync(string nameProtocol, string dataLog, string dbConnectionString,
+        public async Task WriteToDbAsync(string nameProtocol, string dataLog, string dbConnectionString,
             EnumProviderDb enumProvider)
         {
+            if (string.IsNullOrEmpty(nameProtocol))
+                throw new ArgumentException("Не указано имя протокола!");
+            if (string.IsNullOrEmpty(dbConnectionString))
+                throw new ArgumentException("Не указана строка подключения!");
+
             dynamic db = null;
             switch (enumProvider)
             {
                 case EnumProviderDb.SqLite:
-                    db = InitDbProvider(dbConnectionString).ApplicationServices.GetService<ConfigureDbSqLite>();
+                    try
+                    {
+                        db = InitDbProvider(dbConnectionString).ApplicationServices.GetService<ConfigureDbSqLite>();
+                    }
+                    catch (Exception e)
+                    {
+                        throw new AccessViolationException(string.Format("Не удалось подключиться к базе данных! {0}",
+                            e.Message));
+                    }
                     break;
             }
 
@@ -42,11 +56,22 @@ namespace AppPinger.DB
 
         public List<LogModel> ViewDb(string dbConnectionString, EnumProviderDb enumProvider)
         {
+            if (string.IsNullOrEmpty(dbConnectionString))
+                throw new ArgumentException("Не указана строка подключения!");
+
             dynamic db = null;
             switch (enumProvider)
             {
                 case EnumProviderDb.SqLite:
-                    db = InitDbProvider(dbConnectionString).ApplicationServices.GetService<ConfigureDbSqLite>();
+                    try
+                    {
+                        db = InitDbProvider(dbConnectionString).ApplicationServices.GetService<ConfigureDbSqLite>();
+                    }
+                    catch (Exception e)
+                    {
+                        throw new AccessViolationException(string.Format("Не удалось подключиться к базе данных! {0}",
+                            e.Message));
+                    }
                     break;
             }
 
@@ -56,7 +81,7 @@ namespace AppPinger.DB
             return new List<LogModel>();
         }
 
-        public IApplicationBuilder InitDbProvider(string dbConnectionString)
+        private IApplicationBuilder InitDbProvider(string dbConnectionString)
         {
             IServiceCollection providersCollection = new ServiceCollection();
             providersCollection.AddSingleton(x =>

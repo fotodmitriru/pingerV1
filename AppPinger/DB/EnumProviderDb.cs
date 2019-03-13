@@ -1,6 +1,6 @@
 ﻿namespace AppPinger.DB
 {
-    enum EnumProviderDb
+    public enum EnumProviderDb
     {
         SqLite,
         Postgree,
