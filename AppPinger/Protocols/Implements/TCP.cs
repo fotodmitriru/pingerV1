@@ -32,11 +32,9 @@ namespace AppPinger.Protocols.Implements
             if (_port == 0)
                 throw new ArgumentException("Не указан порт для пинга!");
 
-            StartAsync();
+            Task.Run(StartPing);
             return true;
         }
-
-        private async Task StartAsync() => await Task.Run(StartPing);
 
         private Task StartPing()
         {

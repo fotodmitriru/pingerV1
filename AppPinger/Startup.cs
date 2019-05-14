@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using AppPinger.DB;
 using AppPinger.Protocols;
 using AppPinger.Protocols.Interfaces;
 using AppPinger.Protocols.Implements;
@@ -57,12 +58,13 @@ namespace AppPinger
 
             serviceCollection.AddTransient<ConfigProtocol>();
             serviceCollection.AddSingleton<IListConfigProtocols, ListConfigProtocols>();
+            serviceCollection.AddTransient<DbManager>();
 
             var globalDistStorage = new Dictionary<string, string>();
             globalDistStorage.Add("globalDistStorage", appConfig["fileLogs"]);
             globalDistStorage.Add("globalDistStorageSqLite", appConfig["fileLogsSQLite"]);
             serviceCollection.AddSingleton(x =>
-                ActivatorUtilities.CreateInstance<SaveLogs>(x, globalDistStorage));
+                ActivatorUtilities.CreateInstance<SaveLogs>(x, globalDistStorage, serviceCollection));
         }
 
         private static void CreateExampleConfig(IApplicationBuilder appBuilder, string fileJsonPath)

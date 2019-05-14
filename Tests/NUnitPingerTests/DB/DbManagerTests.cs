@@ -17,17 +17,17 @@ namespace NUnitPingerTests.DB
             var dbManager = new DbManager();
             Assert.ThrowsAsync<ArgumentException>(async () =>
             {
-                await dbManager.WriteToDbAsync("", "", _dbConnectionString, EnumProviderDb.SqLite);
+                await dbManager.WriteToDbAsync("", "", _dbConnectionString, TODO);
             });
         }
 
         [Test]
         public void DbManager_WriteToDbAsync_onSuccess()
         {
-            var dbManager = new DbManager();
             Assert.DoesNotThrowAsync(async () =>
             {
-                await dbManager.WriteToDbAsync(_nameProtocol, _dataLog, _dbConnectionString, EnumProviderDb.SqLite);
+                var dbManager = new DbManager();
+                await dbManager.WriteToDbAsync(_nameProtocol, _dataLog, _dbConnectionString, TODO);
             });
         }
 

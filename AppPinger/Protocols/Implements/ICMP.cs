@@ -28,11 +28,9 @@ namespace AppPinger.Protocols.Implements
             if (_period == 0)
                 throw new ArgumentException("Не указан период для пинга!");
 
-            StartAsync();
+            Task.Run(StartPing);
             return true;
         }
-
-        private async Task StartAsync() => await Task.Run(StartPing);
 
         private Task StartPing()
         {

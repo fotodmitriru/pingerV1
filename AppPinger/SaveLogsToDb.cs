@@ -1,6 +1,10 @@
 ﻿using System;
 using AppPinger.DB;
+using AppPinger.DB.ConfigureProviders;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Builder.Internal;
 using Microsoft.EntityFrameworkCore.Internal;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace AppPinger
 {
@@ -9,17 +13,19 @@ namespace AppPinger
         public void WriteLogAsyncToSqLite(string nameProtocol, string dataLog, string distStorage = "")
         {
             distStorage = CheckIsNullOrEmptyDistStorage(distStorage, GetGlobalDistStorage("globalDistStorageSqLite"));
-
-            var sqliteDb = new DbManager();
-            sqliteDb.WriteToDbAsync(nameProtocol, dataLog, $"Data Source={distStorage}", EnumProviderDb.SqLite);
+            var dbManager = _appBuilder.ApplicationServices.GetService<DbManager>();
+            var configureDbSqLite = InitDbProvider($"Data Source={distStorage}").ApplicationServices
+                .GetService<ConfigureDbSqLite>();
+            dbManager.WriteToDbAsync(nameProtocol, dataLog, configureDbSqLite);
         }
 
         public bool ViewLogFromSqLite(string distStorage = "")
         {
             distStorage = CheckIsNullOrEmptyDistStorage(distStorage, GetGlobalDistStorage("globalDistStorageSqLite"));
-
-            var sqliteDb = new DbManager();
-            var logsModel = sqliteDb.ViewDb($"Data Source={distStorage}", EnumProviderDb.SqLite);
+            var _dbManager = _appBuilder.ApplicationServices.GetService<DbManager>();
+            var configureDbSqLite = InitDbProvider($"Data Source={distStorage}").ApplicationServices
+                .GetService<ConfigureDbSqLite>();
+            var logsModel = _dbManager.ViewDb($"Data Source={distStorage}", configureDbSqLite);
             if (!logsModel.Any())
                 return false;
             foreach (var logMod in logsModel)
@@ -28,6 +34,14 @@ namespace AppPinger
             }
 
             return true;
+        }
+
+        private IApplicationBuilder InitDbProvider(string dbConnectionString)
+        {
+            _serviceCollection.AddSingleton(x =>
+                ActivatorUtilities.CreateInstance<ConfigureDbSqLite>(x, dbConnectionString));
+            var serviceProvider = _serviceCollection.BuildServiceProvider();
+            return new ApplicationBuilder(serviceProvider);
         }
     }
 }
