@@ -37,7 +37,7 @@ namespace NUnitPingerTests.DB
             Assert.Throws<ArgumentException>(() =>
             {
                 var dbManager = new DbManager();
-                dbManager.ViewDb("", EnumProviderDb.SqLite);
+                dbManager.ViewDb("", TODO);
             });
         }
 
@@ -47,7 +47,7 @@ namespace NUnitPingerTests.DB
             Assert.DoesNotThrow(() =>
             {
                 var dbManager = new DbManager();
-                dbManager.ViewDb(_dbConnectionString, EnumProviderDb.SqLite);
+                dbManager.ViewDb(_dbConnectionString, TODO);
             });
         }
     }
