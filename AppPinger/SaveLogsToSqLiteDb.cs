@@ -35,6 +35,8 @@ namespace AppPinger
 
         private IConfigureDb InitSqliteDbProvider(string dbConnectionString)
         {
+            if (string.IsNullOrEmpty(dbConnectionString))
+                throw new ArgumentNullException(dbConnectionString);
             _serviceCollection.AddSingleton(x =>
                 ActivatorUtilities.CreateInstance<ConfigureDbSqLite>(x, dbConnectionString));
             var serviceProvider = _serviceCollection.BuildServiceProvider();

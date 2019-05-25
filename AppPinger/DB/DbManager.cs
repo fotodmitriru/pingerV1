@@ -2,9 +2,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using AppPinger.DB.ConfigureProviders;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Builder.Internal;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace AppPinger.DB
 {
@@ -45,16 +42,6 @@ namespace AppPinger.DB
             dynamic db = configureDb;
 
             return new List<LogModel>(db.LogsModel);
-        }
-
-        public IApplicationBuilder InitDbProvider(string dbConnectionString, IConfigureDb configDb)
-        {
-            IServiceCollection providersCollection = new ServiceCollection();
-            if (configDb is ConfigureDbSqLite)
-                providersCollection.AddSingleton(x =>
-                    ActivatorUtilities.CreateInstance<ConfigureDbSqLite>(x, dbConnectionString));
-            var serviceProvider = providersCollection.BuildServiceProvider();
-            return new ApplicationBuilder(serviceProvider);
         }
     }
 }
